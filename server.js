@@ -4,10 +4,10 @@ const mongodb = require("mongodb");
 const path = require("path");
 const ping = require('ping');
 const ObjectID = require('mongodb').ObjectID;
-const fs = require('fs');
 
 
-let mongoDBServerConnectionString = "mongodb://127.0.0.1:27017"
+
+const mongoDBServerConnectionString = "mongodb://127.0.0.1:27017"
 
 const app = express();
 app.use(bodyParser.json());

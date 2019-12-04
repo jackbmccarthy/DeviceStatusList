@@ -15,5 +15,4 @@ statusText:{
     offline:"Offline",
     online: "Online"
 },
-
 }
