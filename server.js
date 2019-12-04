@@ -5,9 +5,18 @@ const path = require("path");
 const ping = require('ping');
 const ObjectID = require('mongodb').ObjectID;
 
+// Change the Database, Collection, and Server Connection String according to your information.
+const mongoDBDatabase = "canon"
+const mongoDBCollection = "printers"
 
-
+// This connection string is with no authentication on the localhost.
 const mongoDBServerConnectionString = "mongodb://127.0.0.1:27017"
+
+//Change this to configure the port that the application will be listening on.
+const listeningPort = 80
+
+
+
 
 const app = express();
 app.use(bodyParser.json());
@@ -41,28 +50,8 @@ app.post("/ping", (req,res) => {
         res.end()
     })
     
-    
-    /*
-    var returnList = []
+ 
 
-    var nList= await req.body.list.map((printer) => {
-    ping.promise.probe(printer.ipaddress).then(  (val) => {
-    
-    printer.status = val.alive;
-    console.log(printer)
-    return printer
-    
-    }).catch((val)=>{
-    printer.status = val.alive;
-    console.log(printer)
-    
-    })  
-
-    })
-
-    console.log(nList)
-    res.send(nList)
-*/
 })
 
 app.post("/addprinter", (req,res) => {
@@ -70,7 +59,7 @@ app.post("/addprinter", (req,res) => {
     var db = mongodb.MongoClient
     db.connect(mongoDBServerConnectionString, (err, mydb) => {
 
-        mydb.db("canon").collection("printers").insertOne(req.body)
+        mydb.db(mongoDBDatabase).collection(mongoDBCollection).insertOne(req.body)
         mydb.close()
         res.send("Success")  
         res.end()    
@@ -81,7 +70,7 @@ app.post("/editprinter", (req,res) => {
     console.log(req.body)
     var db = mongodb.MongoClient
     db.connect(mongoDBServerConnectionString, (err, mydb) => {
-        mydb.db("canon").collection("printers").updateOne({_id: new ObjectID(req.body.id) }, { $set: {printer: req.body.printer, ipaddress:req.body.ipaddress, notes: req.body.notes}}, function(err, records){
+        mydb.db(mongoDBDatabase).collection(mongoDBCollection).updateOne({_id: new ObjectID(req.body.id) }, { $set: {printer: req.body.printer, ipaddress:req.body.ipaddress, notes: req.body.notes}}, function(err, records){
             if (err) throw err
             //console.log(records)
           })
@@ -95,7 +84,7 @@ app.post("/deleteprinter", (req, res) => {
     console.log(req.body)
     var db = mongodb.MongoClient
     db.connect(mongoDBServerConnectionString, (err, mydb) => {
-        mydb.db("canon").collection("printers").deleteOne({_id: new ObjectID(req.body.id) })
+        mydb.db(mongoDBDatabase).collection(mongoDBCollection).deleteOne({_id: new ObjectID(req.body.id) })
         mydb.close()
         res.send("Success")   
         res.end()   
@@ -105,7 +94,7 @@ app.post("/deleteprinter", (req, res) => {
 app.get("/getprinters", (req,res) => {
     var db = mongodb.MongoClient
     db.connect(mongoDBServerConnectionString, (err, mydb) => {
-        mydb.db("canon").collection("printers").find({}).sort({printer: 1}).toArray((err, list) =>{
+        mydb.db(mongoDBDatabase).collection(mongoDBCollection).find({}).sort({printer: 1}).toArray((err, list) =>{
             //console.log(list)
             res.send(list)
             mydb.close()
@@ -119,6 +108,6 @@ app.get("/getprinters", (req,res) => {
 
 
 
-app.listen(3001, () =>
-  console.log('Express server is running on localhost:3000')
+app.listen(listeningPort, () =>
+  console.log('Express server is running on localhost:'+listeningPort.toString())
 );
